@@ -16,6 +16,10 @@ namespace Users.App.Services.Helpers
             Msg = error;
         }
 
+        public static HandleErrors IncorrectPass()
+        {
+            return new HandleErrors("Incorrect password", 401);
+        }
         public static HandleErrors NotFound()
         {
             return new HandleErrors("User not found", 404);

@@ -15,6 +15,7 @@ namespace Users.App.Services.Projections
         {
             var user = new UsersEntity
             {
+                Id = Guid.NewGuid().ToString(),
                 Name = registerUserDto.Name,
                 Email = registerUserDto.Email,
                 Password = registerUserDto.Password,
