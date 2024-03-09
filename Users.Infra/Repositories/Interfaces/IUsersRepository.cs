@@ -10,5 +10,6 @@ namespace Users.Infra.Repositories.Interfaces
     public interface IUsersRepository
     {
         Task Add(UsersEntity entity);
-        Task<UsersEntity?> GetByEmail(string email}
+        Task<UsersEntity?> GetByEmail(string email);
+    }
 }

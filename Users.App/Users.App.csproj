@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Bank_Users\Bank_Users.csproj" />
+    <ProjectReference Include="..\Bank_Users.Domain\Bank_Users.Domain.csproj" />
     <ProjectReference Include="..\Users.Infra\Users.Infra.csproj" />
   </ItemGroup>
 

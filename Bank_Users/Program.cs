@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Users.Infra.Context;
 using Users.Infra;
+using Users.App;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -13,7 +14,8 @@ builder.Services.AddDbContext<UsersDbContext>(opt =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services
-    .AddRepositories();
+    .AddRepositories()
+    .AddServices();
 
 var app = builder.Build();
 
