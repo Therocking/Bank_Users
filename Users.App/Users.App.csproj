@@ -15,4 +15,12 @@
     <ProjectReference Include="..\Users.Infra\Users.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Jose A. Genao\Desktop\proyects\Bank_Users\Users.App\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Jose A. Genao\Desktop\proyects\Bank_Users\Users.App\.editorconfig" />
+  </ItemGroup>
+
 </Project>

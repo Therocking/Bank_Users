@@ -8,11 +8,11 @@ namespace Bank_Users.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserServices _service;
 
-        public ValuesController(IUserServices service)
+        public UsersController(IUserServices service)
         {
             _service = service;
         }
