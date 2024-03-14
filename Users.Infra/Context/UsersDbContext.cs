@@ -15,5 +15,7 @@ namespace Users.Infra.Context
         }
 
         public DbSet<UsersEntity> Users { get; set; }
+        public DbSet<RolesEntity> Roles { get; set; }
+        public DbSet<UsersRolesEntity> UsersRoles { get; set; }
     }
 }

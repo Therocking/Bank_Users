@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Users.App.Dtos;
 using Users.App.Interfaces;
 using Users.App.Services.Helpers;
+using Newtonsoft.Json;
+using System;
 
 namespace Bank_Users.Controllers
 {
@@ -27,7 +29,7 @@ namespace Bank_Users.Controllers
             }
             catch (HandleErrors err)
             {
-                return StatusCode(err.StatusCode, err.Msg);
+                return StatusCode(err.StatusCode, JsonConvert.SerializeObject(err));
             }
         }
 
@@ -41,7 +43,7 @@ namespace Bank_Users.Controllers
             }
             catch (HandleErrors err)
             {
-                return StatusCode(err.StatusCode, err.Msg);
+                return StatusCode(err.StatusCode, JsonConvert.SerializeObject(err));
             }
         }
     }
