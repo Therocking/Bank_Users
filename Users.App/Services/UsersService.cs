@@ -7,55 +7,61 @@ using Users.Infra.Repositories.Interfaces;
 
 namespace Users.App.Services
 {
-    public class UsersService : IUserServices
-    {
-        private readonly IUsersRepository _repository;
-        private readonly IEncryptPass _encryptPass;
-        private readonly IGenerateJWT _generateJWT;
+	public class UsersService : IUserServices
+	{
+		private readonly IUsersRepository _repository;
+		private readonly IEncryptPass _encryptPass;
+		private readonly IGenerateJWT _generateJWT;
 
-        public UsersService(IUsersRepository repository, IEncryptPass encryptPass, IGenerateJWT generateJWT)
-        {
-            _repository = repository;
-            _encryptPass = encryptPass;
-            _generateJWT = generateJWT;
-        }
+		public UsersService(IUsersRepository repository, IEncryptPass encryptPass, IGenerateJWT generateJWT)
+		{
+			_repository = repository;
+			_encryptPass = encryptPass;
+			_generateJWT = generateJWT;
+		}
 
-        public async Task<DataResponseDto> Login(LoginUserDto loginDto)
-        {
-            try
-            {
-                UsersEntity? user = await _repository.GetByEmail(loginDto.Email) ?? throw HandleErrors.NotFound();
-                string token = _generateJWT.GenerateToken(user.Email);
+		public async Task<DataResponseDto> Login(LoginUserDto loginDto, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				UsersEntity? user = await _repository.GetByEmail(loginDto.Email, cancellationToken) ?? throw HandleErrors.NotFound();
+				string token = _generateJWT.GenerateToken(user.Email);
 
-                bool IsCorrectPass = _encryptPass.ComparePass(user.Password, loginDto.Password);
-                if (!IsCorrectPass) throw HandleErrors.IncorrectPass();
+				bool IsCorrectPass = _encryptPass.ComparePass(user.Password, loginDto.Password);
+				if (!IsCorrectPass) throw HandleErrors.IncorrectPass();
 
-                return DataResponse.ResponseToUser(user, token);
-            }
-            catch (Exception ex)
-            {
-                if (ex is HandleErrors) throw;
+				return DataResponse.ResponseToUser(user, token);
+			}
+			catch (Exception ex)
+			{
+				if (ex is HandleErrors) throw;
 
-                throw HandleErrors.InternalError();
-            }
-        }
+				throw HandleErrors.InternalError();
+			}
+		}
 
-        public async Task<DataResponseDto> Register(RegisterUserDto registerDto)
-        {
-            try
-            {
-                registerDto.Password = _encryptPass.HashPass(registerDto.Password);
-                UsersEntity newUser = RegisterUser.RegisterUserToUser(registerDto);
-                string token = _generateJWT.GenerateToken(newUser.Email);
+		public async Task<DataResponseDto> Register(RegisterUserDto registerDto, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				registerDto.Password = _encryptPass.HashPass(registerDto.Password);
+				UsersEntity newUser = RegisterUser.RegisterUserToUser(registerDto);
+				string token = _generateJWT.GenerateToken(newUser.Email);
 
+                var role = new UsersRolesEntity
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    RoleId = "f7b31aef-6a76-4919-556b-08dc42130bb3",
+                    UserId = newUser.Id,
+                };
 
-                await _repository.Add(newUser);
-                return DataResponse.ResponseToUser(newUser, token);
-            }
-            catch (Exception)
-            {
-                throw HandleErrors.InternalError();
-            }
-        }
-    }
+                await _repository.Add(newUser, role, cancellationToken);
+				return DataResponse.ResponseToUser(newUser, token);
+			}
+			catch (Exception)
+			{
+				throw HandleErrors.InternalError();
+			}
+		}
+	}
 }

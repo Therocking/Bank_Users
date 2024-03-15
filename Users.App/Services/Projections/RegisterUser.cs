@@ -19,10 +19,11 @@ namespace Users.App.Services.Projections
                 Name = registerUserDto.Name,
                 Email = registerUserDto.Email,
                 Password = registerUserDto.Password,
+                CreatedBy = registerUserDto.Email,
+                CreatedDate = DateTime.Now,
             };
 
             return user;
         }
     }
-
 }

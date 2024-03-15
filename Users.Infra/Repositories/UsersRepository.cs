@@ -18,15 +18,16 @@ namespace Users.Infra.Repositories
             _context = context;
         }
 
-        public async Task Add(UsersEntity entity)
+        public async Task Add(UsersEntity entity, UsersRolesEntity role, CancellationToken cancellationToken = default)
         {
             _context.Add(entity);
-            await _context.SaveChangesAsync();
+            _context.Add(role);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<UsersEntity?> GetByEmail(string email)
+        public async Task<UsersEntity?> GetByEmail(string email, CancellationToken cancellationToken = default)
         {
-            return await _context.Users.Where(e => e.Email == email).FirstOrDefaultAsync();
+            return await _context.Users.Where(e => e.Email == email && !e.IsDeleted).FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

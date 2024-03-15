@@ -20,11 +20,11 @@ namespace Bank_Users.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserDto loginDto, CancellationToken cancellationToken)
         {
             try
             {
-                DataResponseDto userRespose = await _service.Login(loginDto);
+                DataResponseDto userRespose = await _service.Login(loginDto, cancellationToken);
                 return Ok(userRespose);
             }
             catch (HandleErrors err)
@@ -34,11 +34,11 @@ namespace Bank_Users.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto, CancellationToken cancellationToken)
         {
             try
             {
-                DataResponseDto userRespose = await _service.Register(registerDto);
+                DataResponseDto userRespose = await _service.Register(registerDto, cancellationToken);
                 return StatusCode(201, userRespose);
             }
             catch (HandleErrors err)

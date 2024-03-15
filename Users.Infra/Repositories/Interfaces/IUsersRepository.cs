@@ -9,7 +9,7 @@ namespace Users.Infra.Repositories.Interfaces
 {
     public interface IUsersRepository
     {
-        Task Add(UsersEntity entity);
-        Task<UsersEntity?> GetByEmail(string email);
+        Task Add(UsersEntity entity, UsersRolesEntity role, CancellationToken cancellationToken);
+        Task<UsersEntity?> GetByEmail(string email, CancellationToken cancellationToken);
     }
 }
