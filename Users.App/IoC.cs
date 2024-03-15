@@ -11,7 +11,8 @@ namespace Users.App
         {
             return services
                 .AddScoped<IUserServices, UsersService>()
-                .AddScoped<IEncryptPass, CustomBcrypt>();
+                .AddScoped<IEncryptPass, CustomBcrypt>()
+                .AddScoped<IGenerateJWT, GenerateJWT>();
         }
     }
 }

@@ -11,23 +11,26 @@ namespace Users.App.Services
     {
         private readonly IUsersRepository _repository;
         private readonly IEncryptPass _encryptPass;
+        private readonly IGenerateJWT _generateJWT;
 
-        public UsersService(IUsersRepository repository, IEncryptPass encryptPass)
+        public UsersService(IUsersRepository repository, IEncryptPass encryptPass, IGenerateJWT generateJWT)
         {
             _repository = repository;
             _encryptPass = encryptPass;
+            _generateJWT = generateJWT;
         }
 
-        public async Task<UserResponseDto> Login(LoginUserDto loginDto)
+        public async Task<DataResponseDto> Login(LoginUserDto loginDto)
         {
             try
             {
                 UsersEntity? user = await _repository.GetByEmail(loginDto.Email) ?? throw HandleErrors.NotFound();
+                string token = _generateJWT.GenerateToken(user.Email);
 
                 bool IsCorrectPass = _encryptPass.ComparePass(user.Password, loginDto.Password);
                 if (!IsCorrectPass) throw HandleErrors.IncorrectPass();
 
-                return ResponseUser.EntityToDto(user);
+                return DataResponse.ResponseToUser(user, token);
             }
             catch (Exception ex)
             {
@@ -37,14 +40,17 @@ namespace Users.App.Services
             }
         }
 
-        public async Task<UserResponseDto> Register(RegisterUserDto registerDto)
+        public async Task<DataResponseDto> Register(RegisterUserDto registerDto)
         {
             try
             {
                 registerDto.Password = _encryptPass.HashPass(registerDto.Password);
                 UsersEntity newUser = RegisterUser.RegisterUserToUser(registerDto);
+                string token = _generateJWT.GenerateToken(newUser.Email);
+
+
                 await _repository.Add(newUser);
-                return ResponseUser.EntityToDto(newUser);
+                return DataResponse.ResponseToUser(newUser, token);
             }
             catch (Exception)
             {

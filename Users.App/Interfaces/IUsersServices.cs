@@ -9,7 +9,7 @@ namespace Users.App.Interfaces
 {
     public interface IUserServices
     {
-        Task<UserResponseDto> Login(LoginUserDto loginDto);
-        Task<UserResponseDto> Register(RegisterUserDto registerDto);
+        Task<DataResponseDto> Login(LoginUserDto loginDto);
+        Task<DataResponseDto> Register(RegisterUserDto registerDto);
     }
 }

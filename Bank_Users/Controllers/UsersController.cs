@@ -24,7 +24,7 @@ namespace Bank_Users.Controllers
         {
             try
             {
-                UserResponseDto userRespose = await _service.Login(loginDto);
+                DataResponseDto userRespose = await _service.Login(loginDto);
                 return Ok(userRespose);
             }
             catch (HandleErrors err)
@@ -38,7 +38,7 @@ namespace Bank_Users.Controllers
         {
             try
             {
-                UserResponseDto userRespose = await _service.Register(registerDto);
+                DataResponseDto userRespose = await _service.Register(registerDto);
                 return StatusCode(201, userRespose);
             }
             catch (HandleErrors err)
