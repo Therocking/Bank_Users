@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Bank_Users.Domain.Entites;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Users.App.Interfaces;
 
 namespace Users.App.Services.Helpers
 {
-    public class GenerateJWT: IGenerateJWT
+    public class GenerateJWT : IGenerateJWT
     {
         private readonly IConfiguration _config;
 
@@ -21,26 +16,26 @@ namespace Users.App.Services.Helpers
             _config = config;
         }
 
-        public string GenerateToken(string email) 
+        public string GenerateToken(string email)
         {
             var jwtSettingsSection = _config.GetSection("JwtSettings");
             var key = jwtSettingsSection["Key"];
 
-            var tokenHandle = new JwtSecurityTokenHandler();
-            var byteKey = Encoding.UTF8.GetBytes(key!);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var byteKey = Encoding.UTF8.GetBytes(key);
             var tokenDes = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-            new Claim(ClaimTypes.Name, email),
-            new Claim("Scope", "Client")
+                    new(ClaimTypes.Name, email)
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteKey), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandle.CreateToken(tokenDes);
-            return tokenHandle.WriteToken(token);
+            var createToken = tokenHandler.CreateToken(tokenDes);
+            var token = tokenHandler.WriteToken(createToken);
+            return token;
         }
     }
 }
