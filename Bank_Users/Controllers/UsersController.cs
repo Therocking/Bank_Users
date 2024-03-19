@@ -5,6 +5,8 @@ using Users.App.Interfaces;
 using Users.App.Services.Helpers;
 using Newtonsoft.Json;
 using System;
+using Users.App.Validations;
+using FluentValidation.Results;
 
 namespace Bank_Users.Controllers
 {
@@ -13,6 +15,8 @@ namespace Bank_Users.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _service;
+        private readonly RegisterUserValidator _registervalidator = new RegisterUserValidator();
+        private readonly LoginUserValidator _loginValidator = new LoginUserValidator();
 
         public UsersController(IUserServices service)
         {
@@ -22,6 +26,9 @@ namespace Bank_Users.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginDto, CancellationToken cancellationToken)
         {
+            ValidationResult result = _loginValidator.Validate(loginDto);
+            if (!result.IsValid) return BadRequest(result.Errors);
+
             try
             {
                 DataResponseDto userRespose = await _service.Login(loginDto, cancellationToken);
@@ -31,11 +38,18 @@ namespace Bank_Users.Controllers
             {
                 return StatusCode(err.StatusCode, JsonConvert.SerializeObject(err));
             }
+            catch(Exception)
+            {
+                return StatusCode(500, JsonConvert.SerializeObject(HandleErrors.InternalError()));
+            }
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto registerDto, CancellationToken cancellationToken)
         {
+            ValidationResult result = _registervalidator.Validate(registerDto);
+            if (!result.IsValid) return BadRequest(result.Errors);
+
             try
             {
                 DataResponseDto userRespose = await _service.Register(registerDto, cancellationToken);
@@ -44,6 +58,10 @@ namespace Bank_Users.Controllers
             catch (HandleErrors err)
             {
                 return StatusCode(err.StatusCode, JsonConvert.SerializeObject(err));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, JsonConvert.SerializeObject(HandleErrors.InternalError()));
             }
         }
     }
