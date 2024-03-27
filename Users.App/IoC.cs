@@ -2,6 +2,7 @@
 using Users.App.Interfaces;
 using Users.App.Services;
 using Users.App.Services.Helpers;
+using Users.App.Validations;
 
 namespace Users.App
 {
@@ -12,7 +13,10 @@ namespace Users.App
             return services
                 .AddScoped<IUserServices, UsersService>()
                 .AddScoped<IEncryptPass, CustomBcrypt>()
-                .AddScoped<IGenerateJWT, GenerateJWT>();
+                .AddScoped<IGenerateJWT, GenerateJWT>()
+                .AddScoped<ValidateEmailUnique>()
+                .AddScoped<RegisterUserValidator>()
+                .AddScoped<LoginUserValidator>();
         }
     }
 }

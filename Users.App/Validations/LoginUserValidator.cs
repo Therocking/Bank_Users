@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using Users.App.Dtos;
 
 namespace Users.App.Validations
@@ -19,8 +14,8 @@ namespace Users.App.Validations
 
             RuleFor(user => user.Password)
                 .NotEmpty()
-                .MaximumLength(125)
-                .MinimumLength(6);
+                .MaximumLength(16)
+                .MinimumLength(8);
         }
     }
 }

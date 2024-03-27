@@ -15,12 +15,14 @@ namespace Bank_Users.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _service;
-        private readonly RegisterUserValidator _registervalidator = new RegisterUserValidator();
-        private readonly LoginUserValidator _loginValidator = new LoginUserValidator();
+        private readonly RegisterUserValidator _registervalidator;
+        private readonly LoginUserValidator _loginValidator;
 
-        public UsersController(IUserServices service)
+        public UsersController(IUserServices service, RegisterUserValidator registerValidator, LoginUserValidator loginValidator)
         {
             _service = service;
+            _registervalidator = registerValidator;
+            _loginValidator = loginValidator;
         }
 
         [HttpPost("login")]
