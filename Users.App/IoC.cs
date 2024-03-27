@@ -14,7 +14,6 @@ namespace Users.App
                 .AddScoped<IUserServices, UsersService>()
                 .AddScoped<IEncryptPass, CustomBcrypt>()
                 .AddScoped<IGenerateJWT, GenerateJWT>()
-                .AddScoped<ValidateEmailUnique>()
                 .AddScoped<RegisterUserValidator>()
                 .AddScoped<LoginUserValidator>();
         }

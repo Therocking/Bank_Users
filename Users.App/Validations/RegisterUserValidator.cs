@@ -1,22 +1,16 @@
 ﻿using FluentValidation;
 using Users.App.Dtos;
-using Users.App.Services.Helpers;
 
 namespace Users.App.Validations
 {
     public class RegisterUserValidator: AbstractValidator<RegisterUserDto>
     {
-        private readonly ValidateEmailUnique _validation;
-        public RegisterUserValidator(ValidateEmailUnique validateEmailUnique)
+        public RegisterUserValidator()
         {
-            _validation = validateEmailUnique;
-
             RuleFor(user => user.Email)
                 .NotEmpty()
                 .MaximumLength(50)
-                .EmailAddress()
-                .Must(BeUniqueEmail)
-                .WithMessage("El correo electrónico ya existe.");
+                .EmailAddress();
 
             RuleFor(user => user.Password)
                 .NotEmpty()
@@ -27,11 +21,6 @@ namespace Users.App.Validations
                 .NotEmpty()
                 .MaximumLength(50)
                 .MinimumLength(3);
-        }
-
-        private bool BeUniqueEmail(string email)
-        {
-            return _validation.IsEmailUnique(email);
         }
     }
 }

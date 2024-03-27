@@ -9,7 +9,8 @@ namespace Users.Infra
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             return services
-                .AddScoped<IUsersRepository, UsersRepository>();
+                .AddScoped<IUsersRepository, UsersRepository>()
+                .AddScoped<IRoleRepository, RolesRepository>();
         }
     }
 }

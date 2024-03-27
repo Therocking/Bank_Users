@@ -10,14 +10,16 @@ namespace Users.App.Services
     public class UsersService : IUserServices
     {
         private readonly IUsersRepository _repository;
+        private readonly IRoleRepository _rolesRepository;
         private readonly IEncryptPass _encryptPass;
         private readonly IGenerateJWT _generateJWT;
 
-        public UsersService(IUsersRepository repository, IEncryptPass encryptPass, IGenerateJWT generateJWT)
+        public UsersService(IUsersRepository repository, IEncryptPass encryptPass, IGenerateJWT generateJWT, IRoleRepository rolesRepository)
         {
             _repository = repository;
             _encryptPass = encryptPass;
             _generateJWT = generateJWT;
+            _rolesRepository = rolesRepository;
         }
 
         public async Task<DataResponseDto> Login(LoginUserDto loginDto, CancellationToken cancellationToken = default)
@@ -37,14 +39,28 @@ namespace Users.App.Services
             UsersEntity newUser = RegisterUser.RegisterUserToUser(registerDto);
             string token = _generateJWT.GenerateToken(newUser.Email);
 
-            var role = new UsersRolesEntity
+            RolesEntity? role = await _rolesRepository.GetByName("user", cancellationToken);
+            if(role is null)
+            {
+                RolesEntity roleEntity = new RolesEntity
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "user",
+                    CreatedBy = "Anonymus",
+                    CreatedDate = DateTimeOffset.Now,
+                    IsDeleted = false,
+                };
+                role = await _rolesRepository.Add(roleEntity, cancellationToken);
+            }
+
+            var UserRole = new UsersRolesEntity
             {
                 Id = Guid.NewGuid().ToString(),
-                RoleId = "f7b31aef-6a76-4919-556b-08dc42130bb3",
+                RoleId = role.Id,
                 UserId = newUser.Id,
             };
 
-            await _repository.Add(newUser, role, cancellationToken);
+            await _repository.Add(newUser, UserRole, cancellationToken);
             return DataResponse.ResponseToUser(newUser, token);
         }
     }
